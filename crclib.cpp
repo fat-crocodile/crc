@@ -59,24 +59,13 @@ namespace {
         return res;
     }
 
-
-    unsigned long set_bit(unsigned long value, int index, int bit) {
-        if (bit)
-            value |= (1UL << index);
-        else
-            value &= ~(1UL << index);
-        return value;
-    }
-
-
     unsigned long reflect(int from, int to, unsigned long x) {
+        unsigned long res = 0;
         for (; from < to; ++from, --to) {
-            unsigned long v1 = (x >> from) & 1;
-            unsigned long v2 = (x >> to) & 1;
-            x = set_bit(x, from, v2);
-            x = set_bit(x, to, v1);
+            res |= ((x >> from) & 1) << to;
+            res |= ((x >> to) & 1) << from;
         } 
-        return x;
+        return res;
     }
 
     unsigned long reflect(int width, unsigned long x) {
