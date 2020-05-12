@@ -9,6 +9,7 @@ int main(int argc, const char* argv[]) {
     unsigned long ff = 0xfffffffful;
     unsigned long ffff = 0xfffffffffffffffful;
 
+    // from https://crccalc.com/ and wikipedia
     //   name          width  poly       init ref   xorout  check
     CRC algos[] = {
         {"crc-32",        32, 0x04c11db7, ff, true,  ff, 0xCBF43926},
