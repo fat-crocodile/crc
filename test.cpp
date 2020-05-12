@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cstring>
+#include <map>
 #include "crclib.h"
 
 using namespace std;
@@ -50,7 +51,7 @@ int main(int argc, const char* argv[]) {
 
         {"crc-64",        64, 0x42F0E1EBA9EA3693ul, 0,    false, 0,    0x6C40DF5F0B497347ul},
         {"crc-64/we",     64, 0x42F0E1EBA9EA3693ul, ffff, false, ffff, 0x62EC59E3F1A4F00Aul},
-        {"crc-64/xz",     64, 0x42F0E1EBA9EA3693ul, ffff, true,  ffff, 0x995DC9BBDF1939FAul},
+        {"crc-64/xz",     64, 0x42F0E1EBA9EA3693ul, ffff, true,  ffff, 0x995DC9BBDF1939FAul}, 
     };
 
     if (argc == 2 && strcmp("--test", argv[1]) == 0) {
@@ -61,11 +62,27 @@ int main(int argc, const char* argv[]) {
             }
         } 
     }
+    else if (argc == 2 && strcmp("--table", argv[1]) == 0) {
+        for (auto& a : algos) {
+            printf("%s:\n", a.name);
+            std::map<int, int> m;
+            for (auto i : a.table) {
+                if (m.find(i % 256) != m.end())
+                    m[i % 256] += 1;
+                else
+                    m[i % 256] = 1;
+            }
+            for (auto k : m) {
+                if (k.second > 1)
+                    printf("    %02x: %d\n", k.first, k.second);
+            }
+        } 
+    }
     else {
-        auto calc = algos[0].make_calc();  // crc-32 the same as python zlib.crc32
+        auto calc = algos[0].make_calc();  // crc-32, you can check it with python zlib.crc32
         
         for (;;) {
-            char buffer[1024];
+            char buffer[10240];
             size_t len = fread(buffer, 1, sizeof(buffer), stdin);
 
             if (len == 0) 

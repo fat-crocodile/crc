@@ -54,7 +54,7 @@ struct CRC {
         return check == calc("123456789", 9);
     }
 
-private:
+//private:
 
     void calc_table();
     unsigned long table[256];
